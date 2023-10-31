@@ -1,7 +1,7 @@
 public class Rider implements Runnable {
-    private final Resources resources;
-    public Rider(Resources resources) {
-        this.resources = resources;
+    private final SharedResources SharedResources;
+    public Rider(SharedResources SharedResources) {
+        this.SharedResources = SharedResources;
     }
     private void board() {
         System.out.println("Rider boarded to bus");
@@ -10,21 +10,22 @@ public class Rider implements Runnable {
     @Override
     public void run() {
         try {
-            resources.getMutex().acquire();
-                resources.setWaitingRiders(resources.getWaitingRiders() + 1);
-                System.out.println(resources.getWaitingRiders() + " Riders on waiting");
-            resources.getMutex().release();
+            SharedResources.getMutex().acquire();
+                int waitingRiders = SharedResources.getWaitingRiders()
+                SharedResources.setWaitingRiders(waitingRiders + 1);
+                System.out.println(SharedResources.getWaitingRiders() + " Riders on waiting");
+            SharedResources.getMutex().release();
 
-            resources.getBusWait().acquire();
+            SharedResources.getBusWait().acquire();
 
             board();
 
-            resources.getBus().passengers +=1;
-            if(resources.getBus().passengers ==50 || resources.getBus().passengers == resources.getWaitingRiders()){
-                resources.setWaitingRiders(Math.max(resources.getWaitingRiders() - 50, 0));
-                resources.getBoarded().release();
+            SharedResources.getBus().passengers +=1;
+            if(SharedResources.getBus().passengers ==50 || SharedResources.getBus().passengers == SharedResources.getWaitingRiders()){
+                SharedResources.setWaitingRiders(Math.max(SharedResources.getWaitingRiders() - 50, 0));
+                SharedResources.getBoarded().release();
             }else {
-                resources.getBusWait().release();
+                SharedResources.getBusWait().release();
             }
 
         } catch (InterruptedException e) {

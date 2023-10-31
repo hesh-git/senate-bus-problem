@@ -1,13 +1,13 @@
 import java.util.concurrent.Semaphore;
 
-public class Resources {
+public class SharedResources {
     private int waitingRiders;
     private Semaphore busWait;  //signal when bus arrive and wait on bus
     private Semaphore boarded;  //signal till all riders are boarded
     private Semaphore mutex;   //mutex for shared variable waitingRiders
     private Bus bus;
 
-    public Resources() {
+    public SharedResources() {
         this.waitingRiders = 0;
         this.mutex = new Semaphore(1);
         this.busWait = new Semaphore(0);

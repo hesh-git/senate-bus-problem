@@ -4,21 +4,21 @@ public class Main {
         System.out.println("+++++ Senate Bus Stop +++++");
         System.out.println("***** Bus Capacity: 50 *****");
 
-        Resources resources = new Resources();
+        SharedResources SharedResources = new SharedResources();
 
-        Thread busScheduler = new Thread(new BusScheduler(resources));
-        Thread riderScheduler = new Thread(new RiderScheduler(resources));
+        Thread busSchedulerThread = new Thread(new BusDispatcher(SharedResources));
+        Thread riderSchedulerThread = new Thread(new RiderDispatcher(SharedResources));
 
-        busScheduler.start();
-        riderScheduler.start();
+        busSchedulerThread.start();
+        riderSchedulerThread.start();
 
         try {
-            busScheduler.join();
-            riderScheduler.join();
+            busSchedulerThread.join();
+            riderSchedulerThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Program terminated");
+        System.out.println("Program is terminated!!!");
     }
 }
