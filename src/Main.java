@@ -1,8 +1,8 @@
 public class Main {
 
-    private void startProgram(){
+    public static void main(String[] args) {
         System.out.println("+++++ Senate Bus Stop +++++");
-        System.out.println("***** Bus Capacity:50 *****");
+        System.out.println("***** Bus Capacity: 50 *****");
 
         Resources resources = new Resources();
 
@@ -21,9 +21,4 @@ public class Main {
 
         System.out.println("Program terminated");
     }
-
-    public static void main(String[] args) {
-        new Main().startProgram();
-    }
-
 }

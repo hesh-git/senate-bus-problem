@@ -10,21 +10,21 @@ public class Rider implements Runnable {
     @Override
     public void run() {
         try {
-            resources.mutex.acquire();
-                resources.waitingRiders += 1;
-                System.out.println(resources.waitingRiders + " Riders on waiting");
-            resources.mutex.release();
+            resources.getMutex().acquire();
+                resources.setWaitingRiders(resources.getWaitingRiders() + 1);
+                System.out.println(resources.getWaitingRiders() + " Riders on waiting");
+            resources.getMutex().release();
 
-            resources.busWait.acquire();
+            resources.getBusWait().acquire();
 
             board();
 
-            resources.bus.passengers +=1;
-            if(resources.bus.passengers ==50 || resources.bus.passengers ==resources.waitingRiders){
-                resources.waitingRiders=Math.max(resources.waitingRiders - 50, 0);
-                resources.boarded.release();
+            resources.getBus().passengers +=1;
+            if(resources.getBus().passengers ==50 || resources.getBus().passengers == resources.getWaitingRiders()){
+                resources.setWaitingRiders(Math.max(resources.getWaitingRiders() - 50, 0));
+                resources.getBoarded().release();
             }else {
-                resources.busWait.release();
+                resources.getBusWait().release();
             }
 
         } catch (InterruptedException e) {
