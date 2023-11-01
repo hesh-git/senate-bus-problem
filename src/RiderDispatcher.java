@@ -1,18 +1,17 @@
 import java.util.Random;
 
-public class RiderScheduler implements Runnable {
-    private final Resources resources;
+public class RiderDispatcher implements Runnable {
+    private final SharedResources SharedResources;
     private float meanTime = 3f * 1000;
-    public static Random random;
-    public RiderScheduler(Resources resources) {
-        this.resources = resources;
-        random = new Random();
+    private static final Random random = new Random();
+    public RiderDispatcher(SharedResources SharedResources) {
+        this.SharedResources = SharedResources;
     }
 
     @Override
     public void run() {
         while (true) {
-            new Thread(new Rider(resources)).start();
+            new Thread(new Rider(SharedResources)).start();
             try {
                 float lambda = 1 / meanTime;
                 Thread.sleep(Math.round(-Math.log(1 - random.nextFloat()) / lambda));

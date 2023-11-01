@@ -1,28 +1,35 @@
 public class Bus implements Runnable {
-    private final Resources resources;
-    public int passengers = 0;
-    public Bus(Resources resources) {
-        this.resources = resources;
+    private final SharedResources sharedResources;
+    public int ridersLoaded = 0;
+
+    public Bus(SharedResources SharedResources) {
+        this.sharedResources = SharedResources;
     }
+
     private void depart() {
-        System.out.println("Bus loaded with " + passengers + " riders and " + resources.getWaitingRiders() + " riders are left");
-        System.out.println("***** BUS DEPARTED !!! *** \n");
+        System.out.println(ridersLoaded + " Riders are boarded to the Bus and " + sharedResources.getWaitingRiders() + " Riders are left waiting for next bus");
+        System.out.println("\n ***** NOTICE - BUS DEPARTED !!! *** \n");
     }
 
     @Override
     public void run() {
         try {
-            resources.getMutex().acquire();              //avoid new riders when bus is at stop
-                System.out.println("***** BUS ARRIVED !!! *** \n");
-                System.out.println("Number of Riders waiting for Bus : "+ resources.getWaitingRiders());
-                System.out.println("Number of Riders who can board to Bus : "+ Math.min(resources.getWaitingRiders(),50) );
-                if (resources.getWaitingRiders() > 0) {
-                    resources.setBus(this);
-                    resources.getBusWait().release();    //Signal riders that bus arrived
-                    resources.getBoarded().acquire();    //Wait till 50 or less are aboard
+            sharedResources.getMutex().acquire();              //avoid new riders when bus is at stop
+                System.out.println("\n ***** NOTICE - BUS ARRIVED !!! *** \n");
+
+                int waitingRiders = sharedResources.getWaitingRiders();
+                System.out.println( waitingRiders + " Riders are waiting for Bus");
+
+                int canBoard = Math.min(sharedResources.getWaitingRiders(),50);
+                System.out.println(canBoard + " Riders can board to Bus" );
+
+                if (sharedResources.getWaitingRiders() > 0) {
+                    sharedResources.setBus(this);
+                    sharedResources.getBusWait().release();    //Riders count when bus arrived to the halt
+                    sharedResources.getBoarded().acquire();    //Wait till 50 or less are aboard
                 }
             depart();
-            resources.getMutex().release();
+            sharedResources.getMutex().release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

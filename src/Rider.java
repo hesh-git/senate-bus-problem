@@ -1,7 +1,7 @@
 public class Rider implements Runnable {
-    private final Resources resources;
-    public Rider(Resources resources) {
-        this.resources = resources;
+    private final SharedResources sharedResources;
+    public Rider(SharedResources SharedResources) {
+        this.sharedResources = SharedResources;
     }
     private void board() {
         System.out.println("Rider boarded to bus");
@@ -10,21 +10,21 @@ public class Rider implements Runnable {
     @Override
     public void run() {
         try {
-            resources.getMutex().acquire();
-                resources.setWaitingRiders(resources.getWaitingRiders() + 1);
-                System.out.println(resources.getWaitingRiders() + " Riders on waiting");
-            resources.getMutex().release();
+            sharedResources.getMutex().acquire();
+                sharedResources.setWaitingRiders(sharedResources.getWaitingRiders() + 1);
+                System.out.println(sharedResources.getWaitingRiders() + " Riders on waiting");
+            sharedResources.getMutex().release();
 
-            resources.getBusWait().acquire();
+            sharedResources.getBusWait().acquire();
 
             board();
 
-            resources.getBus().passengers +=1;
-            if(resources.getBus().passengers ==50 || resources.getBus().passengers == resources.getWaitingRiders()){
-                resources.setWaitingRiders(Math.max(resources.getWaitingRiders() - 50, 0));
-                resources.getBoarded().release();
+            sharedResources.getBus().ridersLoaded +=1;
+            if(sharedResources.getBus().ridersLoaded ==50 || sharedResources.getBus().ridersLoaded == sharedResources.getWaitingRiders()){
+                sharedResources.setWaitingRiders(Math.max(sharedResources.getWaitingRiders() - 50, 0));
+                sharedResources.getBoarded().release();
             }else {
-                resources.getBusWait().release();
+                sharedResources.getBusWait().release();
             }
 
         } catch (InterruptedException e) {
