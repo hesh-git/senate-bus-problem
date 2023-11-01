@@ -4,10 +4,10 @@ public class Main {
         System.out.println("+++++ Senate Bus Stop +++++");
         System.out.println("***** Bus Capacity: 50 *****");
 
-        SharedResources SharedResources = new SharedResources();
+        SharedResources sharedResources = new SharedResources();
 
-        Thread busSchedulerThread = new Thread(new BusDispatcher(SharedResources));
-        Thread riderSchedulerThread = new Thread(new RiderDispatcher(SharedResources));
+        Thread busSchedulerThread = new Thread(new BusDispatcher(sharedResources));
+        Thread riderSchedulerThread = new Thread(new RiderDispatcher(sharedResources));
 
         busSchedulerThread.start();
         riderSchedulerThread.start();
