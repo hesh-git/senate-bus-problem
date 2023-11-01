@@ -1,10 +1,10 @@
 import java.util.Random;
 
-public class RiderScheduler implements Runnable {
+public class RiderDispatcher implements Runnable {
     private final SharedResources SharedResources;
     private float meanTime = 3f * 1000;
     private static final Random random = new Random();
-    public RiderScheduler(SharedResources SharedResources) {
+    public RiderDispatcher(SharedResources SharedResources) {
         this.SharedResources = SharedResources;
     }
 
